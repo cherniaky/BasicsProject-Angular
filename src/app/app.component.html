@@ -1,8 +1,9 @@
 <div class="container">
   <div class="row">
-    <app-header></app-header>
+    <app-header (routeSelect)="onNavigate($event)"></app-header>
     <div class="col-md-12">
-      <h2>IM working</h2>
+      <app-recipes *ngIf="route === 'r'"></app-recipes>
+      <app-shopping-list *ngIf="route === 'sl'"></app-shopping-list>
     </div>
   </div>
 </div>
