@@ -27,6 +27,9 @@ export class RecipeService {
   getRecipes() {
     return this.recipes.slice();
   }
+  getRecipe(id: number) {
+    return this.recipes.slice()[id];
+  }
 
   addIngredientsToShoppingList(ings: Ingredient[]) {
     ings.forEach((ing) => {

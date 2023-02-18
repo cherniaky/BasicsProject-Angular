@@ -8,10 +8,6 @@ export type routeType = 'r' | 'sl';
 })
 export class HeaderComponent implements OnInit {
   collapsed = true;
-  @Output() routeSelect = new EventEmitter<routeType>();
   constructor() {}
-  onSelect(route: routeType) {
-    this.routeSelect.emit(route);
-  }
   ngOnInit(): void {}
 }
