@@ -13,10 +13,10 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown" appDropdown>
-                    <a  class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
+                    <a class="dropdown-toggle" role="button">Manage <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a >Save data</a></li>
-                        <li><a >Fetch data</a></li>
+                        <li><a (click)="onDataSave()">Save data</a></li>
+                        <li><a (click)="onDataFetch()">Fetch data</a></li>
                     </ul>
                 </li>
             </ul>

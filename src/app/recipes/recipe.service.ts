@@ -9,23 +9,14 @@ export class RecipeService {
   recipeSelected = new Subject<Recipe>();
   recipesChanged = new Subject<Recipe[]>();
 
-  private recipes: Recipe[] = [
-    new Recipe(
-      'Salad',
-      'description',
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?quality=90&webp=true&resize=375,341',
-      [new Ingredient('Meat', 1), new Ingredient('French Fries', 20)]
-    ),
-    new Recipe(
-      'Burger',
-      'descriptionasdasdasd',
-      'https://images.immediate.co.uk/production/volatile/sites/30/2020/08/chorizo-mozarella-gnocchi-bake-cropped-9ab73a3.jpg?quality=90&webp=true&resize=375,341',
-      [new Ingredient('Bread', 2), new Ingredient('Meat', 1)]
-    ),
-  ];
+  private recipes: Recipe[] = [];
 
   constructor(private slService: ShoppingListService) {}
 
+  setRecipes(recipes: Recipe[]) {
+    this.recipes = recipes.slice();
+    this.recipesChanged.next(this.recipes.slice());
+  }
   getRecipes() {
     return this.recipes.slice();
   }
