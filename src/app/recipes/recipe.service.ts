@@ -37,8 +37,8 @@ export class RecipeService {
     this.recipesChanged.next(this.recipes.slice());
   }
 
-  addIngredientsToShoppingList(ings: Ingredient[]) {
-    ings.forEach((ing) => {
+  addIngredientsToShoppingList(ingredients: Ingredient[]) {
+    ingredients.forEach((ing) => {
       this.slService.addIngredient(ing);
     });
   }

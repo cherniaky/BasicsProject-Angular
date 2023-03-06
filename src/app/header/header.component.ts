@@ -1,4 +1,12 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
+import { Subscription } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { DataStorageService } from '../shared/data-storage.service';
 
 export type routeType = 'r' | 'sl';
@@ -7,14 +15,31 @@ export type routeType = 'r' | 'sl';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   collapsed = true;
-  constructor(private dataStorageService: DataStorageService) {}
-  ngOnInit(): void {}
+  isAuthenticated = false;
+  authSub: Subscription;
+
+  constructor(
+    private dataStorageService: DataStorageService,
+    private authService: AuthService
+  ) {}
+  ngOnInit(): void {
+    this.authSub = this.authService.user.subscribe((user) => {
+      this.isAuthenticated = !!user.token;
+    });
+  }
   onDataSave() {
     this.dataStorageService.storeRecipes();
   }
   onDataFetch() {
     this.dataStorageService.loadRecipes().subscribe();
+  }
+  onLogOut() {
+    this.authService.logout();
+  }
+
+  ngOnDestroy(): void {
+    this.authSub.unsubscribe();
   }
 }
