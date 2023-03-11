@@ -1,8 +1,15 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import {
+  Component,
+  ComponentFactoryResolver,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserCredential } from 'firebase/auth';
 import { Observable, Subscription } from 'rxjs';
+import { AlertComponent } from '../shared/alert/alert.component';
+import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 import { AuthService } from './auth.service';
 
 @Component({
@@ -14,9 +21,15 @@ export class AuthComponent implements OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error: string = null;
+  @ViewChild(PlaceholderDirective, { static: false })
+  alertHost: PlaceholderDirective;
   authSubscription: Subscription;
+  private closeRef: null | Subscription = null;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router // private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
@@ -38,10 +51,12 @@ export class AuthComponent implements OnDestroy {
     this.authSubscription = authObs.subscribe(
       (userCredentials) => {
         this.isLoading = false;
+
         this.router.navigate(['/recipes']);
       },
       (err) => {
         this.error = err;
+        this.showErrorAlert(err);
         this.isLoading = false;
       }
     );
@@ -49,7 +64,27 @@ export class AuthComponent implements OnDestroy {
     form.reset();
   }
 
+  onHandleError() {
+    this.error = null;
+  }
+
+  private showErrorAlert(message: string) {
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(AlertComponent);
+
+    componentRef.instance.massage = message;
+    this.closeRef = componentRef.instance.close.subscribe(() => {
+      this.closeRef.unsubscribe();
+      hostViewContainerRef.clear();
+    });
+  }
+
   ngOnDestroy(): void {
     this.authSubscription.unsubscribe();
+    if (this.closeRef) {
+      this.closeRef.unsubscribe();
+    }
   }
 }
